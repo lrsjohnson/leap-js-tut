@@ -1,4 +1,5 @@
 var canvas = document.getElementById('canvas');
+var c = canvas.getContext('2d');
 
 var controller = new Leap.Controller();
 
@@ -18,18 +19,25 @@ function onDeviceDisconnected() {
 
 function onLeapReady() {
     console.log('Leap is ready.');
-    var c = canvas.getContext('2d');
+}
 
-    var img = new Image();
-    img.src = "img/leap-logo.jpg";
-    img.onload = function() {
-        c.drawImage(img, 0, 0);
-    }
+function onAnimationFrame(frame) {
+    var numberOfFingers = frame.fingers.length;
+
+    var width = canvas.width;
+    var height = canvas.height;
+
+    c.clearRect(0, 0, width, height);
+    c.font = "30px Arial";
+    c.textAlign = 'center';
+    c.textBaseline = 'middle';
+    c.fillText( numberOfFingers, width / 2, height / 2);
 }
 
 controller.on('connect', onControllerConnect);
 controller.on('deviceConnected', onDeviceConnected);
 controller.on('deviceDisconnected', onDeviceDisconnected);
 controller.on('ready', onLeapReady);
+controller.on('animationFrame', onAnimationFrame);
 
 controller.connect();
